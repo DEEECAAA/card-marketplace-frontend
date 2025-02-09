@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/58bb701d-d7f7-4972-ad11-ce432b2c2659/resourceGroups/CardMarketplaceGR/providers/Microsoft.Web/sites/CardMarketplace",
+    "appService.deploySubpath": "build"
+}

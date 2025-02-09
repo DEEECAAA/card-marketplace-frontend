@@ -1,0 +1,155 @@
+.transactions-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.transactions-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 20px;
+}
+
+.loading-message, .error-message, .no-transactions-message {
+    font-size: 16px;
+    color: #666;
+    margin-top: 15px;
+}
+
+.transaction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.transaction-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    border-left: 5px solid #0078d4;
+}
+
+.transaction-card:hover {
+    transform: translateY(-4px);
+}
+
+.transaction-id {
+    font-size: 18px;
+    font-weight: bold;
+    color: #0078d4;
+    margin-bottom: 5px;
+}
+
+.transaction-date, .transaction-total {
+    font-size: 14px;
+    color: #333;
+}
+
+.transaction-items-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #444;
+    margin-top: 10px;
+    border-bottom: 2px solid #0078d4;
+    display: inline-block;
+    padding-bottom: 4px;
+}
+
+.transaction-items-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+    transition: transform 0.2s;
+}
+
+.transaction-item:hover {
+    transform: scale(1.02);
+}
+
+.transaction-item-img {
+    width: 60px;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-item-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.item-name {
+    font-weight: bold;
+    color: #222;
+}
+
+.item-price {
+    font-size: 14px;
+    color: #0078d4;
+}
+
+.item-quantity {
+    font-size: 12px;
+    color: #555;
+}
+
+.back-button {
+    background: #0078d4;
+    color: white;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-top: 15px;
+}
+
+.back-button:hover {
+    background: #005ea6;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .transaction-item {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .transaction-item-img {
+        width: 80px;
+    }
+}

@@ -1,0 +1,138 @@
+.favorites-page {
+    max-width: 900px;
+    margin: auto;
+    padding: 15px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.favorites-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 15px;
+}
+
+.section-title {
+    font-size: 20px;
+    color: #0078d4;
+    margin-top: 25px;
+    border-bottom: 2px solid #0078d4;
+    display: inline-block;
+    padding-bottom: 4px;
+}
+
+.favorites-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.favorite-card, .favorite-deck {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.favorite-card:hover, .favorite-deck:hover {
+    transform: translateY(-4px);
+}
+
+.favorite-img {
+    width: 100%;
+    max-width: 160px;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.favorite-info {
+    font-size: 14px;
+    text-align: center;
+}
+
+.empty-message {
+    font-size: 16px;
+    color: #888;
+    margin-top: 15px;
+}
+
+.favorite-buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.favorite-buttons button {
+    padding: 8px 12px;
+    font-size: 13px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    flex: 1;
+}
+
+.details-button {
+    background: #0078d4;
+    color: white;
+}
+
+.details-button:hover {
+    background: #005ea6;
+}
+
+.remove-favorite {
+    background: #ff4d4d;
+    color: white;
+}
+
+.remove-favorite:hover {
+    background: #cc0000;
+}
+
+.cart-button {
+    background: #ff9900;
+    color: white;
+}
+
+.cart-button:hover {
+    background: #cc7700;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .favorites-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .favorite-card, .favorite-deck {
+        width: 100%;
+        max-width: 300px;
+    }
+}

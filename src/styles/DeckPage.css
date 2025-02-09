@@ -1,0 +1,152 @@
+.single-deck-page {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.deck-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.deck-title {
+    font-size: 32px;
+    color: #222;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.deck-image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    object-fit: cover;
+}
+
+.deck-info {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.price-tag {
+    font-weight: bold;
+    color: #0078d4;
+    font-size: 22px;
+}
+
+.deck-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+.deck-card {
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    width: 180px;
+}
+
+.deck-card:hover {
+    transform: translateY(-5px);
+}
+
+.deck-card-img {
+    width: 150px;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.deck-card-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.deck-card-quantity {
+    font-size: 14px;
+    color: #666;
+}
+
+.details-button {
+    background: #0078d4;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.details-button:hover {
+    background: #005ea6;
+}
+
+.unavailable-text {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.deck-actions {
+    margin-top: 25px;
+}
+
+.cart-button {
+    background: #ff6600;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-right: 10px;
+}
+
+.cart-button:hover {
+    background: #cc5200;
+}
+
+.back-button {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.back-button:hover {
+    background: #222;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

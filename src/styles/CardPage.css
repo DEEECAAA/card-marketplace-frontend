@@ -1,0 +1,105 @@
+.single-card-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #1E3C72, #2A5298);
+    color: white;
+    font-family: "Arial", sans-serif;
+  }
+  
+  .card-container {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 800px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+  }
+  
+  .card-container:hover {
+    transform: scale(1.02);
+  }
+  
+  .card-image {
+    width: 250px;
+    height: auto;
+    border-radius: 8px;
+    margin-right: 20px;
+  }
+  
+  .card-details {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    color: #333;
+  }
+  
+  .card-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #1E3C72;
+  }
+  
+  .card-description {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  .card-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #28a745;
+  }
+  
+  .card-quantity {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #DC3545;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+  }
+  
+  button {
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+  
+  .favorite-button {
+    background: #ffc107;
+    color: black;
+  }
+  
+  .favorite-button:hover {
+    background: #e0a800;
+  }
+  
+  .cart-button {
+    background: #17a2b8;
+    color: white;
+  }
+  
+  .cart-button:hover {
+    background: #138496;
+  }
+  
+  .back-button {
+    background: #6c757d;
+    color: white;
+  }
+  
+  .back-button:hover {
+    background: #5a6268;
+  }
