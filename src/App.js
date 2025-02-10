@@ -18,7 +18,6 @@ const msalInstance = new PublicClientApplication(msalConfig);
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useIsAuthenticated();
-  console.log("isAuthenticated:", isAuthenticated); // Debug
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
@@ -36,14 +35,12 @@ const App = () => {
     const accounts = instance.getAllAccounts();
     
     if (accounts.length > 0) {
-      console.log("Account trovato:", accounts[0]);
       instance.setActiveAccount(accounts[0]);
     } else {
       console.warn("Nessun account attivo trovato. Riprovo...");
       instance.handleRedirectPromise().then(() => {
         const newAccounts = instance.getAllAccounts();
         if (newAccounts.length > 0) {
-          console.log("Account ora trovato:", newAccounts[0]);
           instance.setActiveAccount(newAccounts[0]);
         }
       }).catch(error => console.error("Errore nel gestire il reindirizzamento:", error));
