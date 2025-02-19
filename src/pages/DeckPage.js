@@ -3,6 +3,8 @@ import axios from "axios";
 import { useMsal } from "@azure/msal-react";
 import { useNavigate, useParams} from "react-router-dom";
 import "../styles/DeckPage.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DeckPage = ({ updateCartCount }) => {
     const { instance, accounts } = useMsal();
@@ -23,6 +25,7 @@ const DeckPage = ({ updateCartCount }) => {
             const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetDeck?=${deckId}`, { headers });
             setDeck(response.data);
         } catch (error) {
+            toast.error("Errore durante il recupero del deck.");
             console.error("Errore nel recupero del deck:", error);
             setError("Errore durante il recupero del deck.");
         } finally {
@@ -36,6 +39,7 @@ const DeckPage = ({ updateCartCount }) => {
             const response = await axios.get("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetAllCards?", { headers });
             setAllCards(response.data);
         } catch (error) {
+            toast.error("Errore nel recupero delle carte.");
             console.error("Errore nel recupero delle carte:", error);
         }
     };
@@ -46,6 +50,7 @@ const DeckPage = ({ updateCartCount }) => {
             const response = await axios.get("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetFavorites?", { headers });
             setFavorites(response.data.favoriteDecks.map(d => d.DeckId));
         } catch (error) {
+            toast.error("Errore nel recupero dei preferiti.");
             console.error("Errore nel recupero dei preferiti:", error);
         }
     };
@@ -62,6 +67,7 @@ const DeckPage = ({ updateCartCount }) => {
 
             if (existingItem) {
                 updatedCart = prevCart.filter(i => i.id !== deck.DeckId);
+                toast.info("❌ Rimosso dal carrello", { theme: "colored" });
             } else {
                 updatedCart = [...prevCart, {
                     id: deck.DeckId,
@@ -71,6 +77,7 @@ const DeckPage = ({ updateCartCount }) => {
                     imageUrl: deck.ImageUrl,
                     type: "deck"
                 }];
+                toast.success("🛒 Aggiunto al carrello", { theme: "colored" });
             }
 
             sessionStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -95,6 +102,7 @@ const DeckPage = ({ updateCartCount }) => {
                     : [...prevFavorites, deck.DeckId];
             });
         } catch (error) {
+            toast.error("Errore durante l'operazione!", { theme: "colored" });
             console.error("Errore nella modifica dei preferiti:", error);
         }
     };
@@ -135,6 +143,7 @@ const DeckPage = ({ updateCartCount }) => {
 
     return (
         <div className="single-deck-page">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
             <div className="deck-header">
                 <h2 className="deck-title">{deck.Name}</h2>
                 <img src={deck.ImageUrl} alt={deck.Name} className="deck-image" />

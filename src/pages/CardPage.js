@@ -4,7 +4,8 @@ import { useMsal } from "@azure/msal-react";
 import { useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/CardPage.css";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CardPage = ({ updateCartCount }) => {
     const { instance, accounts } = useMsal();
@@ -25,6 +26,7 @@ const CardPage = ({ updateCartCount }) => {
             setCard(response.data);
         } catch (error) {
             console.error("Errore nel recupero della carta:", error);
+            toast.error("Errore durante il recupero della carta.");
             setError("Errore durante il recupero della carta.");
         } finally {
             setLoading(false);
@@ -53,8 +55,15 @@ const CardPage = ({ updateCartCount }) => {
     
             fetchFavorites(token);
             fetchCardDetails(token);
+
+            if (favorites.includes(cardId)) {
+                toast.info("❌ Rimosso dai preferiti", { theme: "colored" });
+            } else {
+                toast.success("⭐ Aggiunto ai preferiti", { theme: "colored" });
+            }
         } catch (error) {
             console.error("Errore nella modifica dei preferiti:", error);
+            toast.error("Errore durante l'operazione!", { theme: "colored" });
         }
     };
 
@@ -70,6 +79,7 @@ const CardPage = ({ updateCartCount }) => {
 
             if (existingItem) {
                 updatedCart = prevCart.filter(i => i.id !== card.CardId);
+                toast.info("❌ Rimosso dal carrello", { theme: "colored" });
             } else {
                 updatedCart = [...prevCart, {
                     id: card.CardId,
@@ -80,6 +90,7 @@ const CardPage = ({ updateCartCount }) => {
                     imageUrl: card.ImageUrl,
                     type: "card"
                 }];
+                toast.success("🛒 Aggiunto al carrello", { theme: "colored" });
             }
 
             sessionStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -121,6 +132,7 @@ const CardPage = ({ updateCartCount }) => {
 
     return (
         <div className="single-card-page">
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
           <div className="card-container">
             <img src={card.ImageUrl} alt={card.Name} className="card-image" />
             <div className="card-details">

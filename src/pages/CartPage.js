@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/CartPage.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CartPage = ({ updateCartCount }) => {
     const navigate = useNavigate();
@@ -12,7 +14,7 @@ const CartPage = ({ updateCartCount }) => {
         if (isNaN(newQuantity) || newQuantity <= 0) {
             removeFromCart(itemId);
         } else if (newQuantity > maxQuantity) {
-            alert(`Quantità massima disponibile: ${maxQuantity}`);
+            toast.error(`Quantità massima disponibile: ${maxQuantity}`);
             setCart(prevCart =>
                 prevCart.map(item =>
                     item.id === itemId ? { ...item, quantity: maxQuantity } : item
@@ -27,6 +29,7 @@ const CartPage = ({ updateCartCount }) => {
                 updateCartCount(updatedCart.reduce((total, item) => total + item.quantity, 0));
                 return updatedCart;
             });
+            toast.success("Quantità aggiornata con successo!");
         }
     };
 
@@ -35,13 +38,14 @@ const CartPage = ({ updateCartCount }) => {
         setCart(updatedCart);
         sessionStorage.setItem("cart", JSON.stringify(updatedCart));
         updateCartCount(updatedCart.reduce((total, item) => total + item.quantity, 0));
+        toast.info("Prodotto rimosso dal carrello.");
     };
 
     const handleCheckout = async () => {
         let token = sessionStorage.getItem("token") || localStorage.getItem("token");
     
         if (!token || token === "null") {
-            alert("Errore: Utente non autenticato. Effettua il login.");
+            toast.error("Errore: Utente non autenticato. Effettua il login.");
             navigate("/login");
             return;
         }
@@ -67,16 +71,16 @@ const CartPage = ({ updateCartCount }) => {
             });
     
             if (response.ok) {
-                alert("Transazione completata con successo!");
+                toast.success("Transazione completata con successo!");
                 sessionStorage.removeItem("cart");
                 updateCartCount(0);
                 setTimeout(() => navigate("/"), 1000);
             } else {
                 const errorData = await response.json();
-                alert(`Errore durante la transazione: ${errorData.error}`);
+                toast.error(`Errore durante la transazione: ${errorData.error}`);
             }
         } catch (error) {
-            alert(`Errore di connessione: ${error.message}`);
+            toast.error(`Errore di connessione: ${error.message}`);
         }
     };
 
@@ -132,6 +136,7 @@ const CartPage = ({ updateCartCount }) => {
 
     return (
         <div className="cart-container">
+          <ToastContainer position="top-right" autoClose={3000} />
           <h2 className="cart-title">🛒 Il tuo carrello</h2>
     
           {loading ? (

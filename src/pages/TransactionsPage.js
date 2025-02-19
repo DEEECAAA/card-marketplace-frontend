@@ -3,6 +3,8 @@ import { useMsal } from "@azure/msal-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/TransactionsPage.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TransactionsPage = () => {
     const { instance, accounts } = useMsal();
@@ -18,9 +20,11 @@ const TransactionsPage = () => {
             const response = await axios.get("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetTransaction?", { headers });
     
             setTransactions(response.data.transactions || []);
+            toast.success("✅ Transazioni caricate con successo!");
         } catch (error) {
             console.error("Errore nel recupero delle transazioni:", error);
             setError("Errore durante il recupero delle transazioni.");
+            toast.error("❌ Errore durante il recupero delle transazioni.");
         } finally {
             setLoading(false);
         }
@@ -46,6 +50,7 @@ const TransactionsPage = () => {
 
     return (
         <div className="transactions-container">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
             <h2 className="transactions-title">📜 Le tue Transazioni</h2>
             {loading ? (
                 <p className="loading-message">Caricamento in corso...</p>

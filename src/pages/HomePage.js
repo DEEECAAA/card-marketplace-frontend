@@ -3,6 +3,9 @@ import axios from "axios";
 import { useMsal } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
 import "../styles/HomePage.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const HomePage = ({ updateCartCount }) => {
     const { instance, accounts } = useMsal();
@@ -25,6 +28,7 @@ const HomePage = ({ updateCartCount }) => {
             setCards(response.data);
         } catch (error) {
             console.error("Errore nel recupero delle carte:", error);
+            toast.error("Errore nel recupero delle carte!");
             setError("Errore durante il recupero delle carte.");
         } finally {
             setLoading(false);
@@ -39,6 +43,7 @@ const HomePage = ({ updateCartCount }) => {
             setDecks(response.data);
         } catch (error) {
             console.error("Errore nel recupero dei deck:", error);
+            toast.error("Errore nel recupero dei deck!");
             setError("Errore durante il recupero dei deck.");
         } finally {
             setLoading(false);
@@ -55,6 +60,7 @@ const HomePage = ({ updateCartCount }) => {
             });
         } catch (error) {
             console.error("Errore nel recupero dei preferiti:", error);
+            toast.error("Errore nel recupero dei preferiti!");
         }
     };
 
@@ -105,6 +111,7 @@ const HomePage = ({ updateCartCount }) => {
     
             if (existingItem) {
                 updatedCart = prevCart.filter(i => i.id !== (item.CardId || item.DeckId));
+                toast.warn("Rimosso dal carrello 🛒❌");
             } else {
                 updatedCart = [...prevCart, {
                     id: item.CardId || item.DeckId,
@@ -116,6 +123,7 @@ const HomePage = ({ updateCartCount }) => {
                     imageUrl: item.ImageUrl,
                     type: type
                 }];
+                toast.success("Aggiunto al carrello! 🛒✅");
             }
     
             sessionStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -173,6 +181,7 @@ const HomePage = ({ updateCartCount }) => {
 
     return (
         <div className="homepage">
+          <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
           <header className="header">
             <h2>Marketplace di Carte e Mazzi</h2>
             <button onClick={() => navigate("/create")} className="add-button">

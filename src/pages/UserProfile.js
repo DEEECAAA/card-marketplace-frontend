@@ -3,6 +3,8 @@ import { useMsal } from "@azure/msal-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/UserProfile.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UserProfile = () => {
     const { instance, accounts } = useMsal();
@@ -29,6 +31,7 @@ const UserProfile = () => {
             setDecks(response.data.decks);
             setUserCards(response.data.cards);
         } catch (error) {
+            toast.error("Errore nel recupero del profilo utente.")
             console.error("Errore nel recupero del profilo utente:", error);
         } finally {
             setLoading(false);
@@ -59,9 +62,10 @@ const UserProfile = () => {
                 type === "card" ? { cardId: itemId } : { deckId: itemId }, 
                 { headers });
 
-            alert(`${type === "card" ? "Carta" : "Mazzo"} eliminato con successo!`);
+            toast.success(`${type === "card" ? "Carta" : "Mazzo"} eliminato con successo!`);
             fetchUserProfile(token);
         } catch (error) {
+            toast.error(`Errore nella rimozione: ${error.response?.data?.error || "Errore sconosciuto"}`);
             alert(`Errore nella rimozione: ${error.response?.data?.error || "Errore sconosciuto"}`);
         }
     };
@@ -87,6 +91,7 @@ const UserProfile = () => {
                 setEditItem({ ...item, type, selectedCards: allCards });
                 setDeckCardsLoaded(true);
             } catch (error) {
+                toast.error("Errore nel recupero delle carte del mazzo.")
                 console.error("Errore nel recupero delle carte del mazzo:", error);
             }
         } else {
@@ -131,17 +136,17 @@ const UserProfile = () => {
 
             await axios.post(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/${updateEndpoint}`, payload, { headers });
 
-            alert(`${editItem.type === "card" ? "Carta" : "Mazzo"} aggiornato con successo!`);
+            toast.success(`${editItem.type === "card" ? "Carta" : "Mazzo"} aggiornato con successo!`);
             fetchUserProfile(token);
             closeModal();
         } catch (error) {
-            alert(`Errore nell'aggiornamento: ${error.response?.data?.error || "Errore sconosciuto"}`);
+            toast.error(`Errore nell'aggiornamento: ${error.response?.data?.error || "Errore sconosciuto"}`);
         }
     };
 
     const handleUsernameUpdate = async () => {
         if (!newUsername.trim()) {
-            alert("L'username non può essere vuoto!");
+            toast.info("L'username non può essere vuoto!");
             return;
         }
 
@@ -152,11 +157,11 @@ const UserProfile = () => {
                 username: newUsername
             }, { headers });
 
-            alert("Username aggiornato con successo!");
+            toast.success("Username aggiornato con successo!");
             setIsEditingUsername(false);
             fetchUserProfile(token);
         } catch (error) {
-            alert(`Errore nell'aggiornamento dell'username: ${error.response?.data?.error || "Errore sconosciuto"}`);
+            toast.error(`Errore nell'aggiornamento dell'username: ${error.response?.data?.error || "Errore sconosciuto"}`);
         }
     };
     
@@ -209,6 +214,7 @@ const UserProfile = () => {
 
     return (
         <div className="profile-container">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
             {loading ? (
             <p>Caricamento in corso...</p>
         ) : (

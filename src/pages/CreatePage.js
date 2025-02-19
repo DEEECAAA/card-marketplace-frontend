@@ -3,6 +3,8 @@ import axios from "axios";
 import { useMsal } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
 import "../styles/CreatePage.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreatePage = () => {
     const { instance, accounts } = useMsal();
@@ -33,6 +35,7 @@ const CreatePage = () => {
             const response = await axios.get("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetUserCards?", { headers });
             setUserCards(response.data || []);
         } catch (error) {
+            toast.error("Errore nel recupero delle carte dell'utente:", error);
             console.error("Errore nel recupero delle carte dell'utente:", error);
         }
     };
@@ -79,7 +82,7 @@ const CreatePage = () => {
         e.preventDefault();
     
         if (!cardData.name || !cardData.price || !cardData.quantity) {
-            alert("Compila tutti i campi richiesti prima di continuare.");
+            toast.warn("Compila tutti i campi richiesti prima di continuare.");
             return;
         }
     
@@ -99,10 +102,10 @@ const CreatePage = () => {
                 headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             });
     
-            alert("Carta creata con successo!");
+            toast.success("🎉 Carta creata con successo!");
             navigate("/");
         } catch (error) {
-            alert(`Errore durante la creazione della carta: ${error.response?.data?.error || "Errore sconosciuto"}`);
+            toast.error(`❌ Errore nella creazione: ${error.response?.data?.error || "Errore sconosciuto"}`);
         }
     };
 
@@ -111,7 +114,7 @@ const CreatePage = () => {
         setLoading(true);
     
         if (!deckData.deckName || deckData.selectedCards.length === 0) {
-            alert("Inserisci il nome del mazzo e seleziona almeno una carta.");
+            toast.warn("⚠️ Inserisci il nome del mazzo e seleziona almeno una carta.");
             setLoading(false);
             return;
         }
@@ -133,10 +136,10 @@ const CreatePage = () => {
             await axios.post("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/CreateDeck?", deckPayload, {
                 headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
             });
-            alert("Mazzo creato con successo!");
+            toast.success("🎉 Mazzo creato con successo!");
             navigate("/");
         } catch (error) {
-            alert(`Errore durante la creazione del mazzo: ${error.response?.data?.error || "Errore sconosciuto"}`);
+            toast.error(`❌ Errore nella creazione: ${error.response?.data?.error || "Errore sconosciuto"}`);
         }
         setLoading(false);
     };
@@ -162,6 +165,7 @@ const CreatePage = () => {
 
     return (
         <div className="create-page">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
             <h2 className="page-title">{formType === "card" ? "🃏 Crea una nuova Carta" : "📦 Crea un nuovo Mazzo"}</h2>
     
             <div className="form-toggle">

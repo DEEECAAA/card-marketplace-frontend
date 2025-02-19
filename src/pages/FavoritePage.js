@@ -3,6 +3,8 @@ import axios from "axios";
 import { useMsal } from "@azure/msal-react";
 import { useNavigate } from "react-router-dom";
 import "../styles/FavoritePage.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FavoritesPage = ({ updateCartCount }) => {
     const { instance, accounts } = useMsal();
@@ -24,6 +26,7 @@ const FavoritesPage = ({ updateCartCount }) => {
                 decks: response.data.favoriteDecks,
             });
         } catch (error) {
+            toast.error("Errore nel recupero dei preferiti.");
             console.error("Errore nel recupero dei preferiti:", error);
             setError("Errore durante il recupero dei preferiti.");
         } finally {
@@ -45,8 +48,10 @@ const FavoritesPage = ({ updateCartCount }) => {
             }, { headers });
     
             fetchFavorites(token);
+            toast.success(type === "card" ? "Carta aggiornata nei preferiti!" : "Mazzo aggiornato nei preferiti!");
         } catch (error) {
             console.error("Errore nella modifica dei preferiti:", error);
+            toast.error("Errore nella modifica dei preferiti.");
         }
     };
 
@@ -62,6 +67,7 @@ const FavoritesPage = ({ updateCartCount }) => {
     
             if (existingItem) {
                 updatedCart = prevCart.filter(i => i.id !== (item.CardId || item.DeckId));
+                toast.info(`${item.Name} rimosso dal carrello.`);
             } else {
                 updatedCart = [...prevCart, {
                     id: item.CardId || item.DeckId,
@@ -73,6 +79,7 @@ const FavoritesPage = ({ updateCartCount }) => {
                     imageUrl: item.ImageUrl,
                     type: type
                 }];
+                toast.success(`${item.Name} aggiunto al carrello!`);
             }
     
             sessionStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -112,6 +119,7 @@ const FavoritesPage = ({ updateCartCount }) => {
 
     return (
         <div className="favorites-page">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
             <h2 className="favorites-title">⭐ I tuoi Preferiti</h2>
     
             {loading ? (
