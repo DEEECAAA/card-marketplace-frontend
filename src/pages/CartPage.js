@@ -155,7 +155,7 @@ const CartPage = ({ updateCartCount }) => {
     useEffect(() => {
         const savedCart = JSON.parse(sessionStorage.getItem("cart")) || [];
         setCart(savedCart);
-    }, [updateCartCount, cart]);
+    }, [updateCartCount]);
 
     return (
         <div className="cart-container">
