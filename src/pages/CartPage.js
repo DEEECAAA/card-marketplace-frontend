@@ -94,8 +94,6 @@ const CartPage = ({ updateCartCount }) => {
         
             try {
                 setLoading(true);
-                console.log("Recupero quantità per:", cardIds);
-
                 const response = await fetch("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetCardQuantity?", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -133,7 +131,6 @@ const CartPage = ({ updateCartCount }) => {
 
     useEffect(() => {
         const savedCart = JSON.parse(sessionStorage.getItem("cart")) || [];
-        console.log("Dati nel carrello al caricamento:", savedCart);
         setCart(savedCart);
     }, [updateCartCount, cart]);
 
