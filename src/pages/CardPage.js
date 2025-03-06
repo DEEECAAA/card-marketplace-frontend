@@ -98,7 +98,7 @@ const CardPage = ({ updateCartCount }) => {
                 toast.success("🛒 Aggiunto al carrello", { theme: "colored" });
             }
 
-            console.log("Carrello aggiornato:", updatedCart);
+            
             sessionStorage.setItem("cart", JSON.stringify(updatedCart));
             updateCartCount(updatedCart.length);
             return updatedCart;

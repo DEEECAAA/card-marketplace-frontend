@@ -84,7 +84,10 @@ const CartPage = ({ updateCartCount }) => {
         }
     };
 
+
     useEffect(() => {
+        let isFetching = false;
+
         const fetchCardQuantities = async () => {
             if (cart.length === 0) return;
         
@@ -92,6 +95,9 @@ const CartPage = ({ updateCartCount }) => {
         
             if (cardIds.length === 0) return;
         
+            isFetching = true;  // Blocca altre chiamate
+            setLoading(true);
+
             try {
                 setLoading(true);
                 const response = await fetch("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetCardQuantity?", {
@@ -114,6 +120,7 @@ const CartPage = ({ updateCartCount }) => {
             } catch (error) {
                 console.error("Errore di connessione:", error);
             } finally {
+                isFetching = false;  // Permette nuove richieste
                 setLoading(false);
             }
         };
