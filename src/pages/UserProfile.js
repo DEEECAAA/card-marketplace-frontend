@@ -327,6 +327,62 @@ const UserProfile = () => {
                                 />
                             </>
                         )}
+
+                        {editItem.type === "deck" && deckCardsLoaded && (
+                            <>
+                                <h3 className="deck-selection-title">Seleziona le carte per il mazzo</h3>
+                                <div className="card-selection">
+                                    {userCards.length > 0 ? (
+                                        userCards.map((card) => {
+                                            const isSelected = editItem.selectedCards.some((c) => c.cardId === card.CardId);
+                                            const selectedCard = editItem.selectedCards.find((c) => c.cardId === card.CardId);
+
+                                            return (
+                                                <div key={card.CardId} className="card-item">
+                                                    <img src={card.ImageUrl} alt={card.Name} className="card-preview" />
+                                                    <label>
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={() => {
+                                                                setEditItem((prev) => {
+                                                                    const updatedCards = isSelected
+                                                                        ? prev.selectedCards.filter((c) => c.cardId !== card.CardId)
+                                                                        : [...prev.selectedCards, { cardId: card.CardId, quantity: 1, maxQuantity: card.Quantity }];
+                                                                    return { ...prev, selectedCards: updatedCards };
+                                                                });
+                                                            }}
+                                                            checked={isSelected}
+                                                        />
+                                                        {card.Name} - {card.Description} ({card.Price}€)
+                                                    </label>
+
+                                                    {isSelected && (
+                                                        <input
+                                                            type="number"
+                                                            min="1"
+                                                            max={card.Quantity}
+                                                            value={selectedCard?.quantity || 1}
+                                                            onChange={(e) => {
+                                                                setEditItem((prev) => {
+                                                                    const updatedCards = prev.selectedCards.map((c) =>
+                                                                        c.cardId === card.CardId
+                                                                            ? { ...c, quantity: Math.min(parseInt(e.target.value, 10), c.maxQuantity) }
+                                                                            : c
+                                                                    );
+                                                                    return { ...prev, selectedCards: updatedCards };
+                                                                });
+                                                            }}
+                                                        />
+                                                    )}
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <p className="no-cards-message">⚠ Non hai carte disponibili.</p>
+                                    )}
+                                </div>
+                            </>
+                        )}
     
                         <button onClick={handleUpdate} className="save-button">💾 Salva Modifiche</button>
                         <button onClick={() => closeModal()} className="close-button">❌ Chiudi</button>
