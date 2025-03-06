@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/CartPage.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -86,28 +86,33 @@ const CartPage = ({ updateCartCount }) => {
 
 
     useEffect(() => {
-        let isFetching = false;
-
+        const isFetching = useRef(false); // Mantiene lo stato tra i render
+    
         const fetchCardQuantities = async () => {
-            if (cart.length === 0) return;
-        
+            if (cart.length === 0 || isFetching.current) return;
+    
             const cardIds = cart.map(item => item.cardId).filter(id => id != null && !isNaN(id));
-        
+    
             if (cardIds.length === 0) return;
-        
-            isFetching = true;  // Blocca altre chiamate
+    
+            isFetching.current = true;  // Blocca altre chiamate mentre questa è in corso
             setLoading(true);
-
+    
             try {
-                setLoading(true);
+                console.log("📌 Richiesta quantità per:", cardIds);
+    
                 const response = await fetch("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetCardQuantity?", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ cardIds }),
                 });
-        
+    
+                console.log("📌 Risposta ricevuta:", response);
+    
                 if (response.ok) {
                     const data = await response.json();
+                    console.log("✅ Quantità ricevute:", data);
+    
                     setCart((prevCart) =>
                         prevCart.map(item =>
                             item.cardId ? { ...item, maxQuantity: data[item.cardId] || 0 } : item
@@ -115,17 +120,22 @@ const CartPage = ({ updateCartCount }) => {
                     );
                 } else {
                     const errorData = await response.json();
-                    console.error("Errore nel recupero delle quantità disponibili:", errorData.error);
+                    console.error("❌ Errore nel recupero delle quantità:", errorData.error);
                 }
             } catch (error) {
-                console.error("Errore di connessione:", error);
+                console.error("❌ Errore di connessione:", error);
             } finally {
-                isFetching = false;  // Permette nuove richieste
+                isFetching.current = false;  // Permette nuove richieste
                 setLoading(false);
             }
         };
-
+    
         fetchCardQuantities();
+    
+        // Cleanup per evitare memory leaks se il componente si smonta
+        return () => {
+            isFetching.current = false;
+        };
     }, [cart]);
 
     useEffect(() => {
