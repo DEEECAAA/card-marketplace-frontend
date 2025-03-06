@@ -73,6 +73,11 @@ const CardPage = ({ updateCartCount }) => {
             return;
         }
 
+        if (!card || !card.CardId) {
+            toast.error("Errore: Dati della carta non validi!");
+            return;
+        }
+
         setCart((prevCart) => {
             const existingItem = prevCart.find(i => i.id === card.CardId);
             let updatedCart;
@@ -93,6 +98,7 @@ const CardPage = ({ updateCartCount }) => {
                 toast.success("🛒 Aggiunto al carrello", { theme: "colored" });
             }
 
+            console.log("Carrello aggiornato:", updatedCart);
             sessionStorage.setItem("cart", JSON.stringify(updatedCart));
             updateCartCount(updatedCart.length);
             return updatedCart;

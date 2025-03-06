@@ -132,6 +132,7 @@ const CartPage = ({ updateCartCount }) => {
     useEffect(() => {
         const savedCart = JSON.parse(sessionStorage.getItem("cart")) || [];
         setCart(savedCart);
+        console.log("Carrello caricato:", savedCart);
     }, [updateCartCount, cart]);
 
     return (
