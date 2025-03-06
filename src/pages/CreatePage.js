@@ -49,6 +49,7 @@ const CreatePage = () => {
                 if (type === "card") {
                     setCardData((prevData) => ({ ...prevData, image: reader.result.split(",")[1] }));
                 } else if (type === "deck") {
+                    console.log("📸 Immagine convertita in Base64:", reader.result);
                     setDeckData((prevData) => ({ ...prevData, deckImage: reader.result.split(",")[1] }));
                 }
             };
