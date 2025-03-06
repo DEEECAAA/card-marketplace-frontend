@@ -130,7 +130,7 @@ const CreatePage = () => {
         };
     
         if (deckData.deckImage) {
-            deckPayload.imageUrl = deckData.deckImage;
+            deckPayload.image = deckData.deckImage;
         }
     
         try {
