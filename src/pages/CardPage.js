@@ -22,7 +22,7 @@ const CardPage = ({ updateCartCount }) => {
         setLoading(true);
         try {
             const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-            const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetCard?=${cardId}`, { headers });
+            const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetCard?cardId=${cardId}`, { headers });
             setCard(response.data);
         } catch (error) {
             console.error("Errore nel recupero della carta:", error);
