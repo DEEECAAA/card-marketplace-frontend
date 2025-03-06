@@ -88,41 +88,44 @@ const CartPage = ({ updateCartCount }) => {
         }
     };
 
-    // 🔹 Recupera le quantità disponibili delle carte
     useEffect(() => {
         const fetchCardQuantities = async () => {
             if (cart.length === 0 || isFetching.current) return;
-
+    
             const cardIds = cart.map(item => item.cardId).filter(id => id != null && !isNaN(id));
             if (cardIds.length === 0) return;
-
-            isFetching.current = true; // Evita richieste multiple simultanee
+    
+            isFetching.current = true; // Blocca altre chiamate simultanee
             setLoading(true);
-
+    
             try {
                 console.log("📌 Richiesta quantità per:", cardIds);
-
+    
                 const response = await fetch("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetCardQuantity?", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ cardIds }),
                 });
-
-                console.log("📌 Risposta ricevuta:", response);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log("✅ Quantità ricevute:", data);
-
-                    setCart((prevCart) =>
-                        prevCart.map(item =>
-                            item.cardId ? { ...item, maxQuantity: data[item.cardId] || 0 } : item
-                        )
+    
+                if (!response.ok) throw new Error("Errore nella richiesta API");
+    
+                const data = await response.json();
+                console.log("✅ Quantità ricevute:", data);
+    
+                // 🔹 Controllo se i dati sono cambiati prima di aggiornare lo stato
+                setCart(prevCart => {
+                    const updatedCart = prevCart.map(item =>
+                        item.cardId ? { ...item, maxQuantity: data[item.cardId] || 0 } : item
                     );
-                } else {
-                    const errorData = await response.json();
-                    console.error("❌ Errore nel recupero delle quantità:", errorData.error);
-                }
+    
+                    // 🔹 Evita aggiornamenti inutili per prevenire il re-rendering
+                    if (JSON.stringify(prevCart) !== JSON.stringify(updatedCart)) {
+                        sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+                        return updatedCart;
+                    }
+                    return prevCart;
+                });
+    
             } catch (error) {
                 console.error("❌ Errore di connessione:", error);
             } finally {
@@ -130,14 +133,14 @@ const CartPage = ({ updateCartCount }) => {
                 setLoading(false);
             }
         };
-
+    
         fetchCardQuantities();
-
+    
         // Cleanup per evitare memory leaks
         return () => {
             isFetching.current = false;
         };
-    }, [cart]);
+    }, []); // 🔹 Rimosso `cart` dalla dipendenza per evitare chiamate infinite
 
     // 🔹 Calcola il prezzo totale
     useEffect(() => {
@@ -154,66 +157,67 @@ const CartPage = ({ updateCartCount }) => {
         setCart(savedCart);
     }, [updateCartCount, cart]);
 
-return (
-    <div className="cart-container">
-        <ToastContainer position="top-right" autoClose={3000} />
+    return (
+        <div className="cart-container">
+            <ToastContainer position="top-right" autoClose={3000} />
 
-        <h2 className="cart-title">🛒 Il tuo carrello</h2>
+            <h2 className="cart-title">🛒 Il tuo carrello</h2>
 
-        {loading ? (
-            <p className="loading-message">⏳ Caricamento delle disponibilità...</p>
-        ) : cart.length > 0 ? (
-            <div className="cart-list">
-                {cart.map((item) => (
-                    <div key={item.id} className="cart-item">
-                        {item.imageUrl && <img src={item.imageUrl} alt={item.name} className="cart-item-img" />}
-                        <div className="cart-item-info">
-                            <h3 className="cart-item-name">{item.name}</h3>
-                            <p className="cart-item-price">
-                                💰 Prezzo: <strong>{item.price} €</strong>
-                            </p>
-                            <p className="cart-item-availability">
-                                📦 Disponibilità: <strong>{item.cardId ? item.maxQuantity : "Pezzo unico"}</strong>
-                            </p>
+            {loading ? (
+                <p className="loading-message">⏳ Caricamento delle disponibilità...</p>
+            ) : cart.length > 0 ? (
+                <div className="cart-list">
+                    {cart.map((item) => (
+                        <div key={item.id} className="cart-item">
+                            {item.imageUrl && <img src={item.imageUrl} alt={item.name} className="cart-item-img" />}
+                            <div className="cart-item-info">
+                                <h3 className="cart-item-name">{item.name}</h3>
+                                <p className="cart-item-price">
+                                    💰 Prezzo: <strong>{item.price} €</strong>
+                                </p>
+                                <p className="cart-item-availability">
+                                    📦 Disponibilità: <strong>{item.cardId ? item.maxQuantity : "Pezzo unico"}</strong>
+                                </p>
 
-                            {item.cardId ? (
-                                <div className="quantity-container">
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        max={item.maxQuantity}
-                                        value={item.quantity}
-                                        className="cart-quantity"
-                                        onChange={(e) =>
-                                            updateQuantity(item.id, parseInt(e.target.value), item.maxQuantity)
-                                        }
-                                    />
-                                    <span className="max-quantity">/ {item.maxQuantity}</span>
-                                </div>
-                            ) : (
-                                <p className="deck-info">🔹 Mazzo intero</p>
-                            )}
+                                {item.cardId ? (
+                                    <div className="quantity-container">
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            max={item.maxQuantity}
+                                            value={item.quantity}
+                                            className="cart-quantity"
+                                            onChange={(e) =>
+                                                updateQuantity(item.id, parseInt(e.target.value), item.maxQuantity)
+                                            }
+                                        />
+                                        <span className="max-quantity">/ {item.maxQuantity}</span>
+                                    </div>
+                                ) : (
+                                    <p className="deck-info">🔹 Mazzo intero</p>
+                                )}
 
-                            <button className="cart-remove" onClick={() => removeFromCart(item.id)}>
-                                ❌ Rimuovi
-                            </button>
+                                <button className="cart-remove" onClick={() => removeFromCart(item.id)}>
+                                    ❌ Rimuovi
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
 
-                <div className="cart-summary">
-                    <h3 className="total-price">
-                        💰 Totale: <span>{totalPrice} €</span>
-                    </h3>
-                    <button onClick={handleCheckout} className="checkout-button">
-                        🛒 Procedi al pagamento
-                    </button>
+                    <div className="cart-summary">
+                        <h3 className="total-price">
+                            💰 Totale: <span>{totalPrice} €</span>
+                        </h3>
+                        <button onClick={handleCheckout} className="checkout-button">
+                            🛒 Procedi al pagamento
+                        </button>
+                    </div>
                 </div>
-            </div>
-        ) : (
-            <p className="empty-cart">🛍️ Il carrello è vuoto.</p>
-        )}
-    </div>
-);
+            ) : (
+                <p className="empty-cart">🛍️ Il carrello è vuoto.</p>
+            )}
+        </div>
+    );
 };
+
 export default CartPage;
