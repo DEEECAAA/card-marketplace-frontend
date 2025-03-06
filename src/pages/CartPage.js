@@ -95,7 +95,7 @@ const CartPage = ({ updateCartCount }) => {
             const cardIds = cart.map(item => item.cardId).filter(id => id != null && !isNaN(id));
             if (cardIds.length === 0) return;
     
-            isFetching.current = true; // Blocca altre chiamate simultanee
+            isFetching.current = true; // Evita chiamate duplicate
             setLoading(true);
     
             try {
@@ -112,13 +112,11 @@ const CartPage = ({ updateCartCount }) => {
                 const data = await response.json();
                 console.log("✅ Quantità ricevute:", data);
     
-                // 🔹 Controllo se i dati sono cambiati prima di aggiornare lo stato
                 setCart(prevCart => {
                     const updatedCart = prevCart.map(item =>
                         item.cardId ? { ...item, maxQuantity: data[item.cardId] || 0 } : item
                     );
     
-                    // 🔹 Evita aggiornamenti inutili per prevenire il re-rendering
                     if (JSON.stringify(prevCart) !== JSON.stringify(updatedCart)) {
                         sessionStorage.setItem("cart", JSON.stringify(updatedCart));
                         return updatedCart;
@@ -136,11 +134,10 @@ const CartPage = ({ updateCartCount }) => {
     
         fetchCardQuantities();
     
-        // Cleanup per evitare memory leaks
         return () => {
-            isFetching.current = false;
+            isFetching.current = false; // Cleanup per evitare memory leaks
         };
-    }, []); // 🔹 Rimosso `cart` dalla dipendenza per evitare chiamate infinite
+    }, [cart]); // ✅ Aggiunto `cart` per evitare l'errore ESLint
 
     // 🔹 Calcola il prezzo totale
     useEffect(() => {
