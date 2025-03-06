@@ -315,17 +315,36 @@ const UserProfile = () => {
                                 <label>💰 Prezzo:</label>
                                 <input 
                                     type="number" 
+                                    min="0.01"
+                                    step="0.01"
                                     value={editItem.Price || ""} 
-                                    onChange={(e) => setEditItem({ ...editItem, Price: e.target.value })} 
+                                    onChange={(e) => {
+                                        let value = parseFloat(e.target.value);
+                                        if (!isNaN(value) && value > 0) {
+                                            setEditItem({ ...editItem, Price: value });
+                                        } else {
+                                            setEditItem({ ...editItem, Price: "" });
+                                        }
+                                    }} 
+                                    required 
                                 />
     
                                 <label>📦 Quantità:</label>
                                 <input 
                                     type="number" 
+                                    min="1"
                                     value={editItem.Quantity || ""} 
-                                    onChange={(e) => setEditItem({ ...editItem, Quantity: e.target.value })} 
+                                    onChange={(e) => {
+                                        let value = parseInt(e.target.value, 10);
+                                        if (!isNaN(value) && value > 0) {
+                                            setEditItem({ ...editItem, Quantity: value });
+                                        } else {
+                                            setEditItem({ ...editItem, Quantity: "" });
+                                        }
+                                    }} 
+                                    required 
                                 />
-                            </>
+                                </>
                         )}
 
                         {editItem.type === "deck" && deckCardsLoaded && (

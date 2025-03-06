@@ -86,6 +86,11 @@ const CreatePage = () => {
             toast.warn("Compila tutti i campi richiesti prima di continuare.");
             return;
         }
+
+        if (cardData.price <= 0 || cardData.quantity <= 0) {
+            toast.error("❌ Il prezzo e la quantità devono essere maggiori di 0!");
+            return;
+        }
     
         const cardPayload = { 
             name: cardData.name,
@@ -195,11 +200,15 @@ const CreatePage = () => {
                     <input 
                         type="text" 
                         name="price" 
-                        placeholder="Prezzo (€)" 
+                        placeholder="Prezzo (€)"
+                        min="0.01"
+                        step="0.01"
                         onChange={(e) => {
                             let value = e.target.value.replace(",", ".");
-                            if (!isNaN(value) && value !== "") {
+                            if (!isNaN(value) && parseFloat(value) > 0) {
                                 setCardData({ ...cardData, price: parseFloat(value) });
+                            } else {
+                                setCardData({ ...cardData, price: "" });
                             }
                         }} 
                         required 
@@ -208,7 +217,15 @@ const CreatePage = () => {
                         type="number" 
                         name="quantity" 
                         placeholder="Quantità" 
-                        onChange={(e) => setCardData({ ...cardData, quantity: e.target.value })} 
+                        min="1"
+                        onChange={(e) => {
+                            let value = parseInt(e.target.value, 10);
+                            if (!isNaN(value) && value > 0) {
+                                setCardData({ ...cardData, quantity: value });
+                            } else {
+                                setCardData({ ...cardData, quantity: "" });
+                            }
+                        }} 
                         required 
                     />
                     <input 
@@ -257,7 +274,12 @@ const CreatePage = () => {
                                         min="1" 
                                         max={card.Quantity} 
                                         value={deckData.selectedCards.find(c => c.cardId === card.CardId)?.quantity || 1} 
-                                        onChange={(e) => updateCardQuantity(card.CardId, parseInt(e.target.value), card.Quantity)} 
+                                        onChange={(e) => {
+                                            let value = parseInt(e.target.value, 10);
+                                            if (!isNaN(value) && value > 0) {
+                                                updateCardQuantity(card.CardId, value, card.Quantity);
+                                            }
+                                        }}  
                                     />
                                 )}
                             </div>
