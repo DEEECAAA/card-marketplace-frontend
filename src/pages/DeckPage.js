@@ -15,13 +15,14 @@ const DeckPage = ({ updateCartCount }) => {
     const [error, setError] = useState(null);
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem("cart")) || []);
     const [token, setToken] = useState("");
+    const [allCards, setAllCards] = useState([]);
     const [favorites, setFavorites] = useState([]);
 
     const fetchDeckDetails = useCallback(async (accessToken) => {
         setLoading(true);
         try {
             const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-            const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetDeck?deckId=${deckId}`, { headers });
+            const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetDeck?=${deckId}`, { headers });
             setDeck(response.data);
         } catch (error) {
             toast.error("Errore durante il recupero del deck.");
@@ -32,24 +33,16 @@ const DeckPage = ({ updateCartCount }) => {
         }
     }, [deckId]);
 
-    const fetchDeckCards = useCallback(async (accessToken) => {
+    const fetchAllCards = async (accessToken) => {
         try {
             const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-            const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetDeckCards?deckId=${deckId}`, { headers });
-    
-            if (response.status === 200) {
-                setDeck(prevDeck => ({
-                    ...prevDeck,
-                    cards: response.data, 
-                }));
-            } else {
-                console.warn("⚠️ Nessuna carta trovata per questo mazzo.");
-            }
+            const response = await axios.get("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetAllCards?", { headers });
+            setAllCards(response.data);
         } catch (error) {
-            toast.error("Errore nel recupero delle carte del mazzo.");
-            console.error("❌ Errore nel recupero delle carte del mazzo:", error);
+            toast.error("Errore nel recupero delle carte.");
+            console.error("Errore nel recupero delle carte:", error);
         }
-    }, [deckId]);
+    };
 
     const fetchFavorites = async (accessToken) => {
         try {
@@ -125,8 +118,8 @@ const DeckPage = ({ updateCartCount }) => {
                 .then((response) => {
                     setToken(response.accessToken);
                     fetchDeckDetails(response.accessToken);
+                    fetchAllCards(response.accessToken);
                     fetchFavorites(response.accessToken);
-                    fetchDeckCards(response.accessToken); 
                 })
                 .catch((error) => {
                     instance.acquireTokenPopup({
@@ -134,15 +127,15 @@ const DeckPage = ({ updateCartCount }) => {
                     }).then(response => {
                         setToken(response.accessToken);
                         fetchDeckDetails(response.accessToken);
+                        fetchAllCards(response.accessToken);
                         fetchFavorites(response.accessToken);
-                        fetchDeckCards(response.accessToken);
                     }).catch(err => console.error("Errore nel login manuale:", err));
                 });
         } else {
             fetchDeckDetails(null);
-            fetchDeckCards(null);
+            fetchAllCards(null);
         }
-    }, [accounts, instance, deckId, fetchDeckDetails,fetchDeckCards]);
+    }, [accounts, instance, deckId, fetchDeckDetails]);
 
     if (loading) return <p>Caricamento in corso...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -167,23 +160,29 @@ const DeckPage = ({ updateCartCount }) => {
     
             <h3 className="deck-cards-title">🃏 Carte Incluse:</h3>
             <div className="deck-cards-container">
-            {deck.cards && deck.cards.length > 0 ? (
-                deck.cards.map(card => (
-                    <div key={card.CardId} className="deck-card">
-                        <img src={card.ImageUrl} alt={card.Name} className="deck-card-img" />
-                        <p className="deck-card-name">{card.Name}</p>
-                        <p className="deck-card-quantity"><strong>Quantità:</strong> {card.Quantity}</p>
-                        <button onClick={() => navigate(`/card/${card.CardId}`)} className="details-button">
-                            🔍 Vedi dettagli
-                        </button>
-                    </div>
-                ))
-            ) : (
-                <p className="no-cards-message">⚠️ Nessuna carta trovata per questo mazzo.</p>
-            )}
+                {deck.cards.map(card => {
+                    const cardOutsideDeck = allCards.find(c => c.CardId === card.CardId);
+                    const isClickable = cardOutsideDeck && cardOutsideDeck.Quantity > 0;
+
+                    return (
+                        <div key={card.CardId} className="deck-card">
+                            <img src={card.ImageUrl} alt={card.Name} className="deck-card-img" />
+                            <p className="deck-card-name">{card.Name}</p>
+                            <p className="deck-card-quantity"><strong>Quantità:</strong> {card.Quantity}</p>
+
+                            {isClickable ? (
+                                <button onClick={() => navigate(`/card/${card.CardId}`)} className="details-button">
+                                    🔍 Vedi dettagli
+                                </button>
+                            ) : (
+                                <p className="unavailable-text">(Non disponibile fuori dal deck)</p>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
     
-            <div className="deck-acxtions">
+            <div className="deck-actions">
                 <button className="cart-button" onClick={toggleCart}>
                     {cart.some(i => i.id === deck.DeckId) ? "❌ Rimuovi dal carrello" : "🛒 Aggiungi al carrello"}
                 </button>
