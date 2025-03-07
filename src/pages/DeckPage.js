@@ -125,7 +125,6 @@ const DeckPage = ({ updateCartCount }) => {
                 .then((response) => {
                     setToken(response.accessToken);
                     fetchDeckDetails(response.accessToken);
-                    fetchAllCards(response.accessToken);
                     fetchFavorites(response.accessToken);
                     fetchDeckCards(response.accessToken); 
                 })
@@ -135,14 +134,12 @@ const DeckPage = ({ updateCartCount }) => {
                     }).then(response => {
                         setToken(response.accessToken);
                         fetchDeckDetails(response.accessToken);
-                        fetchAllCards(response.accessToken);
                         fetchFavorites(response.accessToken);
                         fetchDeckCards(response.accessToken);
                     }).catch(err => console.error("Errore nel login manuale:", err));
                 });
         } else {
             fetchDeckDetails(null);
-            fetchAllCards(null);
             fetchDeckCards(null);
         }
     }, [accounts, instance, deckId, fetchDeckDetails]);
