@@ -15,7 +15,6 @@ const DeckPage = ({ updateCartCount }) => {
     const [error, setError] = useState(null);
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem("cart")) || []);
     const [token, setToken] = useState("");
-    const [allCards, setAllCards] = useState([]);
     const [favorites, setFavorites] = useState([]);
 
     const fetchDeckDetails = useCallback(async (accessToken) => {
@@ -44,7 +43,7 @@ const DeckPage = ({ updateCartCount }) => {
         }
     };
 
-    const fetchDeckCards = async (accessToken) => {
+    const fetchDeckCards = useCallback(async (accessToken) => {
         try {
             const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
             const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetDeckCards?deckId=${deckId}`, { headers });
@@ -61,7 +60,7 @@ const DeckPage = ({ updateCartCount }) => {
             toast.error("Errore nel recupero delle carte del mazzo.");
             console.error("❌ Errore nel recupero delle carte del mazzo:", error);
         }
-    };
+    }, [deckId]);
 
     const fetchFavorites = async (accessToken) => {
         try {
