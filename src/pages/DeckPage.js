@@ -142,7 +142,7 @@ const DeckPage = ({ updateCartCount }) => {
             fetchDeckDetails(null);
             fetchDeckCards(null);
         }
-    }, [accounts, instance, deckId, fetchDeckDetails]);
+    }, [accounts, instance, deckId, fetchDeckDetails,fetchDeckCards]);
 
     if (loading) return <p>Caricamento in corso...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
