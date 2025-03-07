@@ -32,17 +32,6 @@ const DeckPage = ({ updateCartCount }) => {
         }
     }, [deckId]);
 
-    const fetchAllCards = async (accessToken) => {
-        try {
-            const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-            const response = await axios.get("https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetAllCards?", { headers });
-            setAllCards(response.data);
-        } catch (error) {
-            toast.error("Errore nel recupero delle carte.");
-            console.error("Errore nel recupero delle carte:", error);
-        }
-    };
-
     const fetchDeckCards = useCallback(async (accessToken) => {
         try {
             const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
