@@ -11,7 +11,6 @@ const CartPage = ({ updateCartCount }) => {
     const [loading, setLoading] = useState(false);
     const isFetching = useRef(false); // Stato persistente tra i render
 
-    // 🔹 Aggiorna la quantità nel carrello
     const updateQuantity = (itemId, newQuantity, maxQuantity) => {
         if (isNaN(newQuantity) || newQuantity <= 0) {
             removeFromCart(itemId);
@@ -35,7 +34,6 @@ const CartPage = ({ updateCartCount }) => {
         }
     };
 
-    // 🔹 Rimuove un prodotto dal carrello
     const removeFromCart = (itemId) => {
         const updatedCart = cart.filter(item => item.id !== itemId);
         setCart(updatedCart);
@@ -44,7 +42,6 @@ const CartPage = ({ updateCartCount }) => {
         toast.info("Prodotto rimosso dal carrello.");
     };
 
-    // 🔹 Gestisce il checkout e la transazione
     const handleCheckout = async () => {
         let token = sessionStorage.getItem("token") || localStorage.getItem("token");
 
@@ -137,9 +134,8 @@ const CartPage = ({ updateCartCount }) => {
         return () => {
             isFetching.current = false; // Cleanup per evitare memory leaks
         };
-    }, [cart]); // ✅ Aggiunto `cart` per evitare l'errore ESLint
+    }, [cart]);
 
-    // 🔹 Calcola il prezzo totale
     useEffect(() => {
         const calculateTotal = () => {
             const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -148,7 +144,6 @@ const CartPage = ({ updateCartCount }) => {
         calculateTotal();
     }, [cart]);
 
-    // 🔹 Recupera il carrello dal sessionStorage
     useEffect(() => {
         const savedCart = JSON.parse(sessionStorage.getItem("cart")) || [];
         setCart(savedCart);
