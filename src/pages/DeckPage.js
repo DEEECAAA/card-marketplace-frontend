@@ -22,7 +22,7 @@ const DeckPage = ({ updateCartCount }) => {
         setLoading(true);
         try {
             const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-            const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetDeck?=${deckId}`, { headers });
+            const response = await axios.get(`https://cardmarketplacefunctions-gugkggfyftd8ffeg.northeurope-01.azurewebsites.net/api/GetDeck?deckId=${deckId}`, { headers });
             setDeck(response.data);
         } catch (error) {
             toast.error("Errore durante il recupero del deck.");
